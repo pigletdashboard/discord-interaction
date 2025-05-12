@@ -1,6 +1,9 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import dotenv from "dotenv"; // Added dotenv import
+
+dotenv.config(); // Load environment variables from .env file
 
 const app = express();
 app.use(express.json());
@@ -80,7 +83,7 @@ app.use((req, res, next) => {
   server.listen({
     port,
     host: "0.0.0.0",
-    reusePort: true,
+    // Removed reusePort: true
   }, () => {
     log(`Discord Gambling Bot server running on port ${port}`);
   });
