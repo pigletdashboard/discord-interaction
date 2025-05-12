@@ -3,6 +3,9 @@ import { Client } from 'discord.js';
 import { createBotClient, setupEventHandlers, registerCommands } from './handlers';
 import { commands } from './commands';
 import WebSocket from 'ws';
+import { dot } from 'node:test/reporters';
+import dotenv from 'dotenv';
+dotenv.config(); // Load environment variables from .env file
 
 // Bot state tracking
 let botClient: Client | null = null;
@@ -17,7 +20,9 @@ let connectionStatus = {
 // Initialize and start the bot
 export async function initializeBot() {
   try {
-    if (!process.env.DISCORD_TOKEN) {
+    // Use process.env directly instead of getenv
+    const discordToken = process.env.DISCORD_TOKEN || '';
+    if (!discordToken) {
       console.error('DISCORD_TOKEN not provided in environment variables');
       return null;
     }
@@ -27,7 +32,7 @@ export async function initializeBot() {
     setupEventHandlers(client);
     
     // Login to Discord
-    await client.login(process.env.DISCORD_TOKEN);
+    await client.login(discordToken); // Use the token retrieved by getenv
     
     // Register slash commands after login
     await registerCommands(client);
@@ -144,7 +149,7 @@ function formatUptime(uptime: number) {
 
 // Setup WebSocket server for real-time updates
 export function setupWebSocket(server: any) {
-  wsServer = new WebSocket.Server({ server });
+  wsServer = new WebSocket.Server({ server, path: '/ws' }); // <-- Add path to avoid Vite conflict
   
   wsServer.on('connection', (ws) => {
     console.log('WebSocket client connected');
