@@ -149,7 +149,7 @@ function formatUptime(uptime: number) {
 
 // Setup WebSocket server for real-time updates
 export function setupWebSocket(server: any) {
-  wsServer = new WebSocket.Server({ server });
+  wsServer = new WebSocket.Server({ server, path: '/ws' }); // <-- Add path to avoid Vite conflict
   
   wsServer.on('connection', (ws) => {
     console.log('WebSocket client connected');
